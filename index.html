@@ -69,22 +69,60 @@
     </main>
 
     <script>
+      // Define percentage schemes for each week including warm-up and cool-down sets
+      const weekPercents = {
+        "1 (5/5/5)": [40, 50, 65, 75, 85],
+        "2 (3/3/3)": [40, 50, 70, 80, 90],
+        "3 (5/3/1)": [40, 50, 75, 85, 95],
+        "4 (Deload)": [40, 50, 60, 50, 40],
+      };
+
+      const weekReps = {
+        "1 (5/5/5)": [5, 5, 5, 5, ""],
+        "2 (3/3/3)": [5, 5, 3, 3, ""],
+        "3 (5/3/1)": [5, 5, 5, 3, ""],
+        "4 (Deload)": [5, 5, 5, 5, ""],
+      };
+
       document
         .getElementById("cycle-form")
         .addEventListener("submit", function (e) {
           e.preventDefault();
           const form = e.target;
           const lift = form.lift.value;
-          const max = form.trainingMax.value;
+          const max = parseFloat(form.trainingMax.value) || 0;
           const week = form.week.value;
 
+          // Get the percentage array and calculate weights rounded to nearest 5 lbs
+          const percents = weekPercents[week] || [];
+          const weights = percents.map(
+            (p) => Math.round((max * p) / 100 / 5) * 5
+          );
+          const reps = weekReps[week] || [];
+
+          // Create log entry with a table of sets
           const entry = document.createElement("div");
           entry.className = "p-4 bg-white shadow rounded";
           entry.innerHTML = `
-        <p><strong>Lift:</strong> ${lift}</p>
-        <p><strong>Training Max:</strong> ${max} lbs</p>
-        <p><strong>Week:</strong> ${week}</p>
-      `;
+          <p><strong>Lift:</strong> ${lift}</p>
+          <p><strong>Training Max:</strong> ${max} lbs</p>
+          <p><strong>Week:</strong> ${week}</p>
+          <table class="table-auto w-full mt-2">
+            <thead>
+              <tr><th>Set</th><th>%</th><th>Weight (lbs)</th><th>Reps</th></tr>
+            </thead>
+            <tbody>
+              ${percents
+                .map(
+                  (p, i) =>
+                    `<tr><td>${i + 1}</td><td>${p}%</td><td>${
+                      weights[i]
+                    }</td><td>${reps[i]}</td></tr>`
+                )
+                .join("")}
+            </tbody>
+          </table>
+        `;
           document.getElementById("log-entries").appendChild(entry);
           form.reset();
         });
