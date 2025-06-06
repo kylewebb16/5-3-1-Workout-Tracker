@@ -3,62 +3,54 @@ def calculate_one_rep_max(weight, reps):
     one_rep_max = weight * (36 / (37 - reps))
     return one_rep_max
 
-
-def calc_five_week(one_rep_max):
-    one_rep_max = one_rep_max * 0.9
-    # 2 warmup sets 40%, 50%, working sets 65%, 75%, 85%
-    five_week_sets = []
-    five_week_sets[0] = one_rep_max * 0.4
-    five_week_sets[1] = one_rep_max * 0.5
-    five_week_sets[2] = one_rep_max * 0.65
-    five_week_sets[3] = one_rep_max * 0.75
-    five_week_sets[4] = one_rep_max * 0.85
+class Exercise():
+    def __init__(self, one_rep_max: int) -> None:
+        self.one_rep_max = one_rep_max
     
-    return five_week_sets
-
-def calc_three_week(one_rep_max):
-    one_rep_max = one_rep_max * 0.9
-    # 2 warmup sets 40%, 50%
-    # working sets are 70%, 80%, 90%
-    three_week_sets = []
-    three_week_sets[0] = one_rep_max * 0.4
-    three_week_sets[1] = one_rep_max * 0.5
-    three_week_sets[2] = one_rep_max * 0.7
-    three_week_sets[3] = one_rep_max * 0.8
-    three_week_sets[4] = one_rep_max * 0.9
+    def calc_five_week(self):
+        working_max = self.one_rep_max * 0.9
+        # 2 warmup sets 40%, 50%, working sets 65%, 75%, 85%
+        percents_five_week = [0.4, 0.5, 0.65, 0.75, 0.85]
+        five_week_sets = [round(percent * working_max) for percent in percents_five_week]
+        return five_week_sets
     
-    return three_week_sets
+    def calc_three_week(self):
+        working_max = self.one_rep_max * 0.9
+        # 2 warmup sets 40%, 50%
+        # working sets are 70%, 80%, 90%
+        percent_deload_week = [0.4, 0.5, 0.7, 0.8, 0.9]
+        three_week_sets = [round(percent * working_max) for percent in percent_deload_week]
+        return three_week_sets
 
-def calc_max_week(one_rep_max):
-    one_rep_max = one_rep_max * 0.9
-    # 2 warmup sets 40%, 50%
-    # working sets are 75%, 85%, 95%
-    max_week_sets = []
-    max_week_sets[0] = one_rep_max * 0.4
-    max_week_sets[1] = one_rep_max * 0.5
-    max_week_sets[2] = one_rep_max * 0.75
-    max_week_sets[3] = one_rep_max * 0.85
-    max_week_sets[4] = one_rep_max * 0.95
+    def calc_max_week(self):
+        working_max = self.one_rep_max * 0.9
+        # 2 warmup sets 40%, 50%
+        # working sets are 75%, 85%, 95%
+        percent_max_week = [0.4, 0.5, 0.75, 0.85, 0.95]
+        max_week_sets = [round(percent * working_max) for percent in percent_max_week]
+        return max_week_sets
+
+    def calc_deload_sets(self):
+        working_max = self.one_rep_max * 0.9
+        # 2 warmup sets are 40%, 40%
+        # 3 working sets are 40%, 50%, 60%
+        percent_deload_week = [0.4, 0.5, 0.5, 0.6, 0.7]
+        deload_week_sets = [round(percent * working_max) for percent in percent_deload_week]
+        return deload_week_sets
+
+    def update_ORM(self):
+        self.one_rep_max = self.one_rep_max + 5
     
-    return max_week_sets
+class Squat(Exercise):
+    pass
 
-def calc_deload_sets(one_rep_max):
-    one_rep_max = one_rep_max * 0.9
-    # 2 warmup sets are 40%, 40%
-    # 3 working sets are 40%, 50%, 60%
-    deload_week_sets = []
-    deload_week_sets[0] = one_rep_max * 0.4
-    deload_week_sets[1] = one_rep_max * 0.4
-    deload_week_sets[2] = one_rep_max * 0.4
-    deload_week_sets[3] = one_rep_max * 0.5
-    deload_week_sets[4] = one_rep_max * 0.6
-    
-    return deload_week_sets
+class Deadlift(Exercise):
+    pass
 
-def update_upper_max(one_rep_max):
-    one_rep_max = one_rep_max + 5
-    return one_rep_max
+class BenchPress(Exercise):
+    def update_ORM(self):
+        self.one_rep_max = self.one_rep_max + 5
 
-def update_lower_max(one_rep_max):
-    one_rep_max = one_rep_max + 10
-    return one_rep_max
+class OverheadPress(Exercise):
+    def update_ORM(self):
+        self.one_rep_max = self.one_rep_max + 5
